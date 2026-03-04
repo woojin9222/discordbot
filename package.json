@@ -1,0 +1,26 @@
+{
+  "name": "discord-bot-slash",
+  "version": "5.0.0",
+  "description": "Discord 봇 - 슬래시 커맨드 + 모듈 방식 + YouTube/Spotify",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "@discordjs/voice": "^0.17.0",
+    "distube": "^5.0.4",
+    "@distube/spotify": "^2.0.0",
+    "@distube/yt-dlp": "^2.0.0",
+    "dotenv": "^16.4.5",
+    "sodium-native": "^4.1.1",
+    "ffmpeg-static": "^5.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
