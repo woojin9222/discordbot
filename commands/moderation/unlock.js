@@ -2,32 +2,27 @@ const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('disc
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('lock')
-    .setDescription('채널을 잠급니다. (모든 멤버 채팅 불가)')
+    .setName('unlock')
+    .setDescription('채널 잠금을 해제합니다.')
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
     .addChannelOption((opt) =>
-      opt.setName('channel').setDescription('잠글 채널 (기본: 현재 채널)').setRequired(false),
-    )
-    .addStringOption((opt) =>
-      opt.setName('reason').setDescription('잠금 사유').setRequired(false),
+      opt.setName('channel').setDescription('잠금 해제할 채널 (기본: 현재 채널)').setRequired(false),
     ),
 
   async execute(interaction) {
     const channel = interaction.options.getChannel('channel') ?? interaction.channel;
-    const reason  = interaction.options.getString('reason') ?? '사유 없음';
 
     try {
       await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
-        SendMessages: false,
+        SendMessages: null, // null = 권한 초기화 (서버 기본값으로 복구)
       });
 
       await interaction.reply({
         embeds: [
           new EmbedBuilder()
-            .setTitle('🔒 채널 잠금')
-            .setDescription(`${channel} 채널이 잠겼습니다.\n모든 멤버가 채팅할 수 없습니다.`)
-            .addFields({ name: '사유', value: reason })
-            .setColor(0xed4245)
+            .setTitle('🔓 채널 잠금 해제')
+            .setDescription(`${channel} 채널 잠금이 해제됐습니다.\n멤버들이 다시 채팅할 수 있습니다.`)
+            .setColor(0x57f287)
             .setTimestamp(),
         ],
       });
@@ -37,7 +32,7 @@ module.exports = {
         embeds: [
           new EmbedBuilder()
             .setTitle('❌ 오류')
-            .setDescription('채널 잠금에 실패했습니다.\n봇에게 **채널 관리** 권한이 있는지 확인해주세요.')
+            .setDescription('채널 잠금 해제에 실패했습니다.\n봇에게 **채널 관리** 권한이 있는지 확인해주세요.')
             .setColor(0xed4245),
         ],
         flags: ['Ephemeral'],
