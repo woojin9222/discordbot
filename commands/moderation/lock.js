@@ -27,7 +27,7 @@ try {
     embeds: [
       new EmbedBuilder()
         .setTitle('🔒 채널 잠금')
-        .setDescription(`${channel} 채널이 잠겼습니다.\n모든 멤버가 채팅할 수 없습니다.`)
+        .setDescription('${channel} 채널이 잠겼습니다.\n모든 멤버가 채팅할 수 없습니다.')
         .addFields({ name: '사유', value: reason })
         .setColor(0xed4245)
         .setTimestamp(),
