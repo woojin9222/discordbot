@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "postinstall": "yt-dlp --version || pip install yt-dlp || pip3 install yt-dlp || true"
   },
   "dependencies": {
     "discord.js": "^14.15.3",
@@ -21,6 +22,6 @@
     "nodemon": "^3.1.4"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.12.0"
   }
 }
