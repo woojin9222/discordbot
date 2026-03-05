@@ -22,7 +22,7 @@ try {
     embeds: [
       new EmbedBuilder()
         .setTitle('🔓 채널 잠금 해제')
-        .setDescription(`${channel} 채널 잠금이 해제됐습니다.\n멤버들이 다시 채팅할 수 있습니다.`)
+        .setDescription('${channel} 채널 잠금이 해제됐습니다.\n멤버들이 다시 채팅할 수 있습니다.')
         .setColor(0x57f287)
         .setTimestamp(),
     ],
