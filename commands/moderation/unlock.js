@@ -1,12 +1,12 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require(‘discord.js’);
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 
 module.exports = {
 data: new SlashCommandBuilder()
-.setName(‘unlock’)
-.setDescription(‘채널 잠금을 해제합니다.’)
+.setName('unlock')
+.setDescription('채널 잠금을 해제합니다.')
 .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
 .addChannelOption((opt) =>
-opt.setName(‘channel’).setDescription(‘잠금 해제할 채널 (기본: 현재 채널)’).setRequired(false),
+opt.setName('channel').setDescription('잠금 해제할 채널 (기본: 현재 채널)').setRequired(false),
 ),
 
 async execute(interaction) {
