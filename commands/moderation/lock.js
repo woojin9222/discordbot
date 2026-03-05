@@ -1,20 +1,20 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require(‘discord.js’);
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 
 module.exports = {
 data: new SlashCommandBuilder()
-.setName(‘lock’)
-.setDescription(‘채널을 잠급니다. (모든 멤버 채팅 불가)’)
+.setName('lock')
+.setDescription('채널을 잠급니다. (모든 멤버 채팅 불가)')
 .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
 .addChannelOption((opt) =>
-opt.setName(‘channel’).setDescription(‘잠글 채널 (기본: 현재 채널)’).setRequired(false),
+opt.setName('channel').setDescription('잠글 채널 (기본: 현재 채널)').setRequired(false),
 )
 .addStringOption((opt) =>
-opt.setName(‘reason’).setDescription(‘잠금 사유’).setRequired(false),
+opt.setName('reason').setDescription('잠금 사유').setRequired(false),
 ),
 
 async execute(interaction) {
-const channel = interaction.options.getChannel(‘channel’) ?? interaction.channel;
-const reason  = interaction.options.getString(‘reason’) ?? ‘사유 없음’;
+const channel = interaction.options.getChannel('channel') ?? interaction.channel;
+const reason  = interaction.options.getString('reason') ?? '사유 없음';
 
 ```
 try {
