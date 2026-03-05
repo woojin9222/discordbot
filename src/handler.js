@@ -35,7 +35,7 @@ function loadCommands(client) {
         await command.execute(interaction);
       } catch (err) {
         console.error(`❌ 명령어 오류 [${interaction.commandName}]:`, err);
-        const payload = { embeds: [errorEmbed('명령어 실행 중 오류가 발생했습니다.')], ephemeral: true };
+        const payload = { embeds: [errorEmbed('명령어 실행 중 오류가 발생했습니다.')], flags: ['Ephemeral'] };
         if (interaction.replied || interaction.deferred) {
           await interaction.followUp(payload).catch(() => {});
         } else {
@@ -59,7 +59,7 @@ function loadCommands(client) {
 
       } catch (err) {
         console.error(`❌ 버튼 오류 [${interaction.customId}]:`, err);
-        const payload = { embeds: [errorEmbed('버튼 처리 중 오류가 발생했습니다.')], ephemeral: true };
+        const payload = { embeds: [errorEmbed('버튼 처리 중 오류가 발생했습니다.')], flags: ['Ephemeral'] };
         if (interaction.replied || interaction.deferred) {
           await interaction.followUp(payload).catch(() => {});
         } else {

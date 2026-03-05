@@ -7,7 +7,7 @@ module.exports = {
     .addIntegerOption((opt) => opt.setName('value').setDescription('볼륨 (0~100)').setRequired(true).setMinValue(0).setMaxValue(100)),
   async execute(interaction) {
     const queue = interaction.client.distube.getQueue(interaction.guild.id);
-    if (!queue) return interaction.reply({ embeds: [errorEmbed('재생 중인 음악이 없습니다.')], ephemeral: true });
+    if (!queue) return interaction.reply({ embeds: [errorEmbed('재생 중인 음악이 없습니다.')], flags: ['Ephemeral'] });
     const vol = interaction.options.getInteger('value');
     interaction.client.distube.setVolume(interaction.guild.id, vol);
     await interaction.reply({ embeds: [successEmbed(`볼륨을 **${vol}%**로 설정했습니다.`)] });

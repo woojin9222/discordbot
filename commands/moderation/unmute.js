@@ -1,5 +1,5 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { errorEmbed, successEmbed } = require('../../src/utils/embed');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
+const { errorEmbed } = require('../../src/utils/embed');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,9 +14,20 @@ module.exports = {
     const target = interaction.options.getMember('target');
 
     if (!target)
-      return interaction.reply({ embeds: [errorEmbed('해당 멤버를 찾을 수 없습니다.')], ephemeral: true });
+      return interaction.reply({ embeds: [errorEmbed('해당 멤버를 찾을 수 없습니다.')], flags: ['Ephemeral'] });
+    if (!target.isCommunicationDisabled())
+      return interaction.reply({ embeds: [errorEmbed('해당 멤버는 현재 타임아웃 상태가 아닙니다.')], flags: ['Ephemeral'] });
 
     await target.timeout(null);
-    await interaction.reply({ embeds: [successEmbed(`**${target.user.tag}**의 타임아웃을 해제했습니다.`)] });
+
+    await interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle('🔊 타임아웃 해제')
+          .addFields({ name: '대상', value: `${target} (${target.user.tag})`, inline: true })
+          .setColor(0x57f287)
+          .setTimestamp(),
+      ],
+    });
   },
 };

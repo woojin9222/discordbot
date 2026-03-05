@@ -5,7 +5,7 @@ module.exports = {
   data: new SlashCommandBuilder().setName('queue').setDescription('재생목록을 표시합니다.'),
   async execute(interaction) {
     const queue = interaction.client.distube.getQueue(interaction.guild.id);
-    if (!queue?.songs?.length) return interaction.reply({ embeds: [errorEmbed('재생목록이 비어있습니다.')], ephemeral: true });
+    if (!queue?.songs?.length) return interaction.reply({ embeds: [errorEmbed('재생목록이 비어있습니다.')], flags: ['Ephemeral'] });
     const list = queue.songs.slice(0, 10)
       .map((s, i) => `**${i + 1}.** [${s.name}](${s.url}) — ${s.formattedDuration}`)
       .join('\n');
