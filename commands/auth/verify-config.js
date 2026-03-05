@@ -7,34 +7,36 @@ module.exports = {
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {
-    const roleId = process.env.VERIFIED_ROLE_ID;
-    const channelId = process.env.VERIFIED_CHANNEL_ID;
-
-    const role = roleId ? interaction.guild.roles.cache.get(roleId) : null;
-    const channel = channelId ? interaction.guild.channels.cache.get(channelId) : null;
-
-    const configEmbed = new EmbedBuilder()
-      .setTitle('⚙️ 인증 설정 현황')
-      .setColor(0x5865f2)
-      .addFields(
-        {
-          name: '🎭 인증 역할 (VERIFIED_ROLE_ID)',
-          value: role ? `${role} (\`${role.id}\`)` : '❌ 미설정 — `.env`에 `VERIFIED_ROLE_ID`를 추가하세요.',
-        },
-        {
-          name: '📢 인증 후 접근 채널 (VERIFIED_CHANNEL_ID)',
-          value: channel
-            ? `${channel} (\`${channel.id}\`)`
-            : '⚠️ 미설정 — 역할 부여만 진행됩니다.',
-        },
-      )
-      .addFields({
-        name: '📖 설정 방법',
-        value:
-          '1. `.env` 파일에 아래 값을 추가하세요.\n```\nVERIFIED_ROLE_ID=역할_ID\nVERIFIED_CHANNEL_ID=채널_ID\n```\n2. 봇을 재시작하면 적용됩니다.\n3. `/verify-setup` 으로 인증 패널을 생성하세요.',
-      })
-      .setFooter({ text: '역할/채널 ID는 개발자 모드에서 우클릭 > ID 복사로 확인할 수 있습니다.' });
-
-    await interaction.reply({ embeds: [configEmbed], ephemeral: true });
+    await interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle('⚙️ 인증 설정 안내')
+          .setColor(0x5865f2)
+          .setDescription(
+            '인증 역할과 채널은 `.env` 파일이 아닌\n`/verify-setup` 명령어로 직접 설정합니다.',
+          )
+          .addFields(
+            {
+              name: '📋 사용 방법',
+              value: [
+                '`/verify-setup role:@역할` — 인증 패널 생성',
+                '`panel_channel` — 패널을 보낼 채널 (기본: 현재 채널)',
+                '`verified_channel` — 인증 후 접근 허용할 채널',
+                '`title` / `description` — 패널 문구 커스텀',
+              ].join('\n'),
+            },
+            {
+              name: '💡 특징',
+              value: [
+                '• DB 없이 버튼에 설정이 인코딩됨',
+                '• 여러 채널에 다른 역할의 패널 동시 운영 가능',
+                '• 봇 재시작 후에도 인증 버튼 유지',
+              ].join('\n'),
+            },
+          )
+          .setFooter({ text: '궁금한 점이 있으면 /help 를 참고하세요.' }),
+      ],
+      flags: ['Ephemeral'],
+    });
   },
 };

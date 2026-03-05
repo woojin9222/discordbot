@@ -18,22 +18,29 @@ async function deployCommands() {
     }
   }
 
+  // 중복 이름 감지 및 로그
+  const names = commands.map((c) => c.name);
+  const duplicates = names.filter((n, i) => names.indexOf(n) !== i);
+  if (duplicates.length > 0) {
+    console.error('❌ 중복된 커맨드 이름 발견:', duplicates);
+    process.exit(1);
+  }
+
+  console.log(`🔄 ${commands.length}개의 슬래시 커맨드를 등록 중...`);
+  console.log('📋 커맨드 목록:', names.join(', '));
+
   const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
   try {
-    console.log(`🔄 ${commands.length}개의 슬래시 커맨드를 Discord에 등록 중...`);
-
     const guildId = process.env.GUILD_ID;
 
     if (guildId) {
-      // 특정 서버에만 등록 (즉시 반영, 개발용)
       await rest.put(
         Routes.applicationGuildCommands(process.env.CLIENT_ID, guildId),
         { body: commands },
       );
       console.log(`✅ 길드(${guildId})에 슬래시 커맨드 등록 완료`);
     } else {
-      // 전체 글로벌 등록 (반영까지 최대 1시간, 프로덕션용)
       await rest.put(
         Routes.applicationCommands(process.env.CLIENT_ID),
         { body: commands },

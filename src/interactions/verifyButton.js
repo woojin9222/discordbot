@@ -10,7 +10,7 @@ const { EmbedBuilder } = require('discord.js');
  * 설정값을 customId에 인코딩하므로 DB/파일/env 불필요
  */
 async function handleVerifyButton(interaction) {
-  await interaction.deferReply({ ephemeral: true });
+  await interaction.deferReply({ flags: ['Ephemeral'] });
 
   const { member, guild, customId } = interaction;
 
