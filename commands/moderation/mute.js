@@ -1,16 +1,12 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const { errorEmbed } = require('../../src/utils/embed');
 
-const TIME_OPTIONS = [
-  { name: '60초', value: 60 },
-  { name: '5분',  value: 300 },
-  { name: '10분', value: 600 },
-  { name: '30분', value: 1800 },
-  { name: '1시간', value: 3600 },
-  { name: '12시간', value: 43200 },
-  { name: '1일',  value: 86400 },
-  { name: '1주일', value: 604800 },
-];
+const UNITS = {
+  초: 1,
+  분: 60,
+  시간: 3600,
+  일: 86400,
+};
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -21,8 +17,16 @@ module.exports = {
       opt.setName('target').setDescription('타임아웃할 멤버').setRequired(true),
     )
     .addIntegerOption((opt) =>
-      opt.setName('duration').setDescription('타임아웃 시간 (기본: 1시간)').setRequired(false)
-        .addChoices(...TIME_OPTIONS),
+      opt.setName('duration').setDescription('타임아웃 시간 (숫자)').setRequired(true).setMinValue(1),
+    )
+    .addStringOption((opt) =>
+      opt.setName('unit').setDescription('단위 (기본: 분)').setRequired(false)
+        .addChoices(
+          { name: '초', value: '초' },
+          { name: '분', value: '분' },
+          { name: '시간', value: '시간' },
+          { name: '일', value: '일' },
+        ),
     )
     .addStringOption((opt) =>
       opt.setName('reason').setDescription('사유').setRequired(false),
@@ -30,28 +34,33 @@ module.exports = {
 
   async execute(interaction) {
     const target   = interaction.options.getMember('target');
-    const duration = interaction.options.getInteger('duration') ?? 3600;
+    const duration = interaction.options.getInteger('duration');
+    const unit     = interaction.options.getString('unit') ?? '분';
     const reason   = interaction.options.getString('reason') ?? '사유 없음';
 
     if (!target)
       return interaction.reply({ embeds: [errorEmbed('해당 멤버를 찾을 수 없습니다.')], flags: ['Ephemeral'] });
     if (!target.moderatable)
-      return interaction.reply({ embeds: [errorEmbed('해당 멤버를 타임아웃할 권한이 없습니다.')], flags: ['Ephemeral'] });
+      return interaction.reply({ embeds: [errorEmbed('해당 멤버를 타임아웃할 권한이 없습니다.\n봇 역할이 대상보다 높은지 확인해주세요.')], flags: ['Ephemeral'] });
     if (target.id === interaction.user.id)
       return interaction.reply({ embeds: [errorEmbed('자기 자신을 타임아웃할 수 없습니다.')], flags: ['Ephemeral'] });
 
-    await target.timeout(duration * 1000, reason);
+    const seconds = duration * UNITS[unit];
 
-    const label = TIME_OPTIONS.find((t) => t.value === duration)?.name ?? `${duration}초`;
+    // Discord 최대 타임아웃: 28일
+    if (seconds > 28 * 86400)
+      return interaction.reply({ embeds: [errorEmbed('타임아웃은 최대 **28일**까지 설정할 수 있습니다.')], flags: ['Ephemeral'] });
+
+    await target.timeout(seconds * 1000, reason);
 
     await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle('🔇 타임아웃')
           .addFields(
-            { name: '대상',   value: `${target} (${target.user.tag})`, inline: true },
-            { name: '시간',   value: label,                             inline: true },
-            { name: '사유',   value: reason,                            inline: false },
+            { name: '대상', value: `${target} (${target.user.tag})`, inline: true },
+            { name: '시간', value: `${duration}${unit}`,             inline: true },
+            { name: '사유', value: reason,                           inline: false },
           )
           .setColor(0xfee75c)
           .setTimestamp(),

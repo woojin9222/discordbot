@@ -11,8 +11,9 @@ function createClient() {
       GatewayIntentBits.GuildMessages,      // 메시지 삭제/수정 로그
       GatewayIntentBits.GuildModeration,    // 밴/킥 로그
       GatewayIntentBits.MessageContent,     // 메시지 내용 캐시
+      GatewayIntentBits.GuildInvites,       // 초대코드 추적
     ],
-    partials: [Partials.Message, Partials.Channel], // 캐시 없는 메시지도 처리
+    partials: [Partials.Message, Partials.Channel],
   });
 
   client.once('clientReady', () => {
